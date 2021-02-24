@@ -1,0 +1,14 @@
+defaults: &defaults
+  cool:
+    saweet: nested settings
+  neat_setting: 24
+
+development:
+  <<: *defaults
+  neat_setting: 100
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
