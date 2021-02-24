@@ -3,6 +3,7 @@ require('pry-byebug')
 
 class SettingsLogic
   class << self
+    # selfはSetting
     def source(yaml_file = nil) # setterでもありgetterでもある
       @source ||= yaml_file
     end
@@ -17,7 +18,22 @@ class SettingsLogic
 
     private
       def instance
-        @instance ||= new
+        return @instance if @instance
+        @instance = new
+        create_accessors # 初回以外はゴーストメソッドではなく、動的メソッドで定義された特異メソッドを使う為に特異メソッドを定義する
+        @instance
+      end
+
+      def create_accessors
+        instance.hash.each do |key, value|
+          create_accessor_method(key)
+        end
+      end
+
+      def create_accessor_method(key)
+        define_singleton_method(key) do
+          instance.send(key)
+        end
       end
   end
 
@@ -42,6 +58,7 @@ class SettingsLogic
     end
 
     def create_accessor_method(key, value)
+      # selfはsetting
       self.class.define_method(key) do
         if value.class == Hash
           self.class.new(value)
