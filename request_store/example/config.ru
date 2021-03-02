@@ -10,3 +10,5 @@ end
 
 use(RequestStore::Middleware)
 run(RackApp.new)
+
+# bundle exec rackup -s puma
